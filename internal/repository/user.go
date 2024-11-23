@@ -82,6 +82,7 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 	users := []model.User{}
 	for rows.Next() {
 		var user model.User
+		var roleID *string // Для хранения role_id, если он NULL
 		if err := rows.Scan(
 			&user.ID,
 			&user.Login,
@@ -89,12 +90,18 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 			&user.LastName,
 			&user.Password,
 			&user.Token,
-			&user.Role,
+			&roleID,
 			&user.Phone,
 			&user.Email,
 		); err != nil {
 			return nil, err
 		}
+
+		// Присваиваем роль, если она существует
+		if roleID != nil {
+			user.Role = *roleID
+		}
+
 		users = append(users, user)
 	}
 
@@ -107,15 +114,16 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 
 func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 	query := fmt.Sprintf(`
-		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email
+		SELECT u.id::bigint, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email, u.status
 		FROM %s AS u
 		LEFT JOIN %s AS r ON u.role_id = r.id
-		WHERE u.login = $1
+		WHERE u.login = \$1
 	`, usersTable, rolesTable)
 
 	row := r.pool.QueryRow(ctx, query, login)
 
 	var user model.User
+	var roleID *string // Для хранения role_id, если он NULL
 	if err := row.Scan(
 		&user.ID,
 		&user.Login,
@@ -123,14 +131,20 @@ func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 		&user.LastName,
 		&user.Password,
 		&user.Token,
-		&user.Role,
+		&roleID,
 		&user.Phone,
 		&user.Email,
+		&user.Status,
 	); err != nil {
 		if err == pgx.ErrNoRows {
 			return model.User{}, custom_errors.UserNotExist
 		}
 		return model.User{}, err
+	}
+
+	// Присваиваем роль, если она существует
+	if roleID != nil {
+		user.Role = *roleID
 	}
 
 	return user, nil
@@ -185,8 +199,8 @@ func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
 
 func (r *User) Update(ctx context.Context, user model.User) error {
 	var roleID *uuid.UUID
-	if req.Role != "" {
-		err := r.pool.QueryRow(ctx, "SELECT id FROM roles WHERE role_name = $1", req.Role).Scan(&roleID)
+	if user.Role != "" {
+		err := r.pool.QueryRow(ctx, "SELECT id FROM roles WHERE role_name = $1", user.Role).Scan(&roleID)
 		if err != nil {
 			if err == pgx.ErrNoRows {
 				return custom_errors.RoleNotExist
@@ -206,13 +220,13 @@ func (r *User) Update(ctx context.Context, user model.User) error {
 		WHERE id = $7`
 
 	_, err := r.pool.Exec(ctx, query,
-		req.Login,
-		req.Password,
+		&user.Login,
+		&user.Password,
 		roleID,
-		req.PhoneNumber,
-		req.Email,
-		req.Status,
-		req.ID,
+		&user.Phone,
+		&user.Email,
+		&user.Status,
+		&user.ID,
 	)
 
 	if err != nil {

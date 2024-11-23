@@ -9,7 +9,7 @@ type Register struct {
 	FirstName string
 	LastName  string
 	Login     string
-	Phome     string
+	Phone     string
 	Email     string
 	Password  string
 }

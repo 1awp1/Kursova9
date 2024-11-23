@@ -19,6 +19,12 @@ type Auth struct {
 	authUseCase usecase.IAuth
 }
 
+func NewAuth(authUseCase usecase.IAuth) *Auth {
+	return &Auth{
+		authUseCase: authUseCase,
+	}
+}
+
 func (h *Auth) Login(c *gin.Context) {
 	var req request.Login
 	if err := c.ShouldBind(&req); err != nil {

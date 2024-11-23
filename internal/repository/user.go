@@ -14,6 +14,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type IUser interface {
+	GetUsers(ctx context.Context, req request.GetUsers) ([]model.User, error)
+	Get(ctx context.Context, login string) (model.User, error)
+	Create(ctx context.Context, user model.User) (uuid.UUID, error)
+	Update(ctx context.Context, req model.User) (model.User, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+}
+
 const (
 	usersTable = "users"
 	rolesTable = "roles"
@@ -175,7 +183,7 @@ func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
 	return userID, nil
 }
 
-func (r *User) Update(ctx context.Context, req request.UpdateUser) error {
+func (r *User) Update(ctx context.Context, user model.User) error {
 	var roleID *uuid.UUID
 	if req.Role != "" {
 		err := r.pool.QueryRow(ctx, "SELECT id FROM roles WHERE role_name = $1", req.Role).Scan(&roleID)

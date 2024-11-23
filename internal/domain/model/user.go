@@ -9,6 +9,6 @@ type User struct {
 	Email     string
 	Password  string
 	Role      string
-	Token     string
+	Token     *string
 	Status    bool
 }

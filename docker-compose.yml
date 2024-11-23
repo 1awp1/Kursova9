@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    environment:
+      - PG_USERNAME=${PG_USERNAME}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - PG_PORT=5432
+      - PG_HOST=auth_db
+      - PG_POOL_MAX=${PG_POOL_MAX}
+      - PG_DBNAME=${PG_DBNAME}
+      - PG_TIMEOUT=${PG_TIMEOUT}
+      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_READ_TIME=${SERVER_READ_TIME}
+      - SERVER_WRITE_TIME=${SERVER_WRITE_TIME}
+      - AUTH_AT_DURATION=${AUTH_AT_DURATION}
+      - AUTH_RF_DURATION=${AUTH_RF_DURATION}
+      - AUTH_PRIVATE_KEY_PATH=${AUTH_PRIVATE_KEY_PATH}
+      - AUTH_PUBLIC_KEY_PATH=${AUTH_PUBLIC_KEY_PATH}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    depends_on:
+      - auth_db
+
+  auth_db:
+    image: postgres
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DBNAME}    

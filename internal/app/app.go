@@ -3,10 +3,9 @@ package app
 import (
 	"context"
 	"dim_kurs/internal/config"
-	"dim_kurs/internal/delivery"
-	"dim_kurs/internal/repository"
+	"dim_kurs/internal/inject"
+	"dim_kurs/internal/routing"
 	"dim_kurs/internal/server"
-	"dim_kurs/internal/usecase"
 	"dim_kurs/pkg/token"
 	"fmt"
 
@@ -33,12 +32,12 @@ func NewApp(ctx context.Context, cfg *config.Config, log *logrus.Logger) *App {
 		panic(err)
 	}
 
-	repos := repository.NewRepositories(pool)
-	usecases := usecase.NewUsecases(repos, log, cfg.Auth, tokenManager)
-	ctrs := controller.NewControllers(usecases)
 	router := gin.New()
+	router.Static("/static", "./static")
+	router.LoadHTMLGlob("internal/templates/*")
 
-	delivery.InitRoutes(router, ctrs)
+	routeHandlers := inject.NewRouteHandlers(router, pool, log, cfg.Auth, tokenManager)
+	routing.InitRoutes(router, routeHandlers)
 	server := server.NewServer(&cfg.Server, router)
 
 	return &App{

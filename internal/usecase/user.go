@@ -30,11 +30,12 @@ func (u *User) GetProfile(ctx context.Context, claims token.AuthInfo) (model.Use
 	return user, nil
 }
 
-func (u *User) Update(ctx context.Context, req request.UpdateUser, claims token.AuthInfo) (model.User, error) {
-	user, err := u.userRepo.Update(ctx, req)
-	if err != nil {
-		return model.User{}, err
-	}
+func (u *User) Update(ctx context.Context, req request.UpdateUser, claims token.AuthInfo) error {
 
-	return user, nil
+	// err := u.userRepo.Update(ctx, req)
+	// if err != nil {
+	// 	return err
+	// }
+
+	return nil
 }

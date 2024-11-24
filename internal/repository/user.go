@@ -18,7 +18,7 @@ type IUser interface {
 	GetUsers(ctx context.Context, req request.GetUsers) ([]model.User, error)
 	Get(ctx context.Context, login string) (model.User, error)
 	Create(ctx context.Context, user model.User) (uuid.UUID, error)
-	Update(ctx context.Context, req model.User) (model.User, error)
+	Update(ctx context.Context, req model.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
@@ -63,7 +63,7 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 		args = append(args, *req.LastName)
 		argID++
 	}
-	if req.Role != "" {
+	if req.Role != nil && *req.Role != "" {
 		whereClauses = append(whereClauses, fmt.Sprintf("r.role_name = $%d", argID))
 		args = append(args, req.Role)
 		argID++

@@ -55,13 +55,13 @@ func (h *Auth) LoginPage(c *gin.Context) {
 }
 
 func (h *Auth) Register(c *gin.Context) {
-	var req request.Login
+	var req request.Register
 	if err := c.ShouldBind(&req); err != nil {
 		c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "Invalid register request"})
 		return
 	}
 
-	accessToken, err := h.authUseCase.Login(c.Request.Context(), req)
+	accessToken, err := h.authUseCase.Register(c.Request.Context(), req)
 	if err != nil {
 		c.HTML(http.StatusUnauthorized, "register.html", gin.H{"error": "Invalid credentials"})
 		return

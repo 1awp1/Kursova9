@@ -18,6 +18,7 @@ import (
 type IAuth interface {
 	Login(ctx context.Context, req request.Login) (string, error)
 	Register(ctx context.Context, req request.Register) (string, error)
+	VerifyToken(ctx context.Context, tkn string) (*token.AuthInfo, error)
 }
 
 type Auth struct {
@@ -25,6 +26,15 @@ type Auth struct {
 	log          *logrus.Logger
 	cfg          config.Auth
 	tokenManager token.TokenManager
+}
+
+func NewAuth(userRepo repository.IUser, log *logrus.Logger, cfg config.Auth, tokenManager token.TokenManager) *Auth {
+	return &Auth{
+		userRepo:     userRepo,
+		log:          log,
+		cfg:          cfg,
+		tokenManager: tokenManager,
+	}
 }
 
 func (u *Auth) Login(ctx context.Context, req request.Login) (string, error) {
@@ -64,7 +74,7 @@ func (u *Auth) Login(ctx context.Context, req request.Login) (string, error) {
 		return "", err
 	}
 
-	if _, err := u.userRepo.Update(ctx, user); err != nil {
+	if err := u.userRepo.Update(ctx, user); err != nil {
 		log.Error(err.Error())
 		return "", err
 	}
@@ -112,4 +122,18 @@ func (u *Auth) Register(ctx context.Context, req request.Register) (string, erro
 	}
 
 	return accessToken, nil
+}
+
+func (u *Auth) VerifyToken(ctx context.Context, tkn string) (*token.AuthInfo, error) {
+	log := u.log.WithFields(logrus.Fields{
+		"op": "internal/usecase/auth/VerifyToken",
+	})
+
+	claims, err := u.tokenManager.Parse(tkn)
+	if err != nil {
+		log.Errorf("access token: %v", err)
+		return nil, err
+	}
+
+	return &claims, nil
 }

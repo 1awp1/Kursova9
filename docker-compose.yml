@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  dim:
     build: .
     environment:
       - PG_USERNAME=${PG_USERNAME}

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"auth/internal/app"
-	"auth/internal/config"
 	"context"
+	"dim_kurs/internal/app"
+	"dim_kurs/internal/config"
 	"os"
 	"os/signal"
 	"syscall"

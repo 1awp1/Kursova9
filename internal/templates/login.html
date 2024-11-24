@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Вход</title>
 </head>
 <body>
     <h1>Login</h1>
     <form action="/login" method="post">
-        <label for="login">Login:</label>
-        <input type="text" id="login" name="login" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
+        <label for="login">Логин:</label>
+        <input type="text" id="login" name="login" required><br><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required><br><br>
         <!-- Скрытое поле для redirect_to -->
         <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
         <button type="submit">Sign In</button>
     </form>
+    <br>
+    <a href="register.html">Нет аккаунта? Зарегистрироваться</a>
+    <br><br>
     {{if .error}}
     <p style="color: red;">{{.error}}</p>
     {{end}}

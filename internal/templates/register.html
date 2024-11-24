@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+  </head>
+  <body>
+    <h1>Register</h1>
+    <form action="/auth/register" method="post">
+      <label for="first_name">Имя:</label>
+      <input
+        type="text"
+        id="first_name"
+        name="first_name"
+        required
+      /><br /><br />
+
+      <label for="last_name">Фамилия:</label>
+      <input type="text" id="last_name" name="last_name" required /><br /><br />
+
+      <label for="login">Логин:</label>
+      <input type="text" id="login" name="login" required /><br /><br />
+
+      <label for="phone">Телефон:</label>
+      <input type="text" id="phone" name="phone" required /><br /><br />
+
+      <label for="email">Электронная почта:</label>
+      <input type="email" id="email" name="email" required /><br /><br />
+
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" name="password" required />
+      <br /><br />
+      <!-- Скрытое поле для redirect_to -->
+      <input type="hidden" name="redirect_to" value="{{.redirect_to}}" />
+      <button type="submit">Register</button>
+    </form>
+    <br />
+    <a href="login.html">Уже есть аккаунт? Войти</a>
+  </body>
+</html>

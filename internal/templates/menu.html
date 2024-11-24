@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель пользователя</title>
+</head>
+<body>
+    <h1>Добро пожаловать, ` + claims.Username + `!</h1>
+    <h2>Управление профилем</h2>
+    
+    <input type="text" id="update-first_name" placeholder="Новое имя"><br><br>
+    <input type="text" id="update-last_name" placeholder="Новая фамилия"><br><br>
+    <input type="text" id="update-login" placeholder="Новый логин"><br><br>
+    <input type="text" id="update-phone" placeholder="Новый телефон"><br><br>
+    <input type="email" id="update-email" placeholder="Новая электронная почта"><br><br>
+    <input type="password" id="update-password" placeholder="Новый пароль"><br><br>
+    
+    <button onclick="updateProfile()">Обновить профиль</button><br>
+    <br>
+    <button onclick="logout()">Выйти</button>
+    
+    <script>
+        async function updateProfile() {
+            const first_name = document.getElementById('update-first_name').value;
+            const last_name = document.getElementById('update-last_name').value;
+            const login = document.getElementById('update-login').value;
+            const phone = document.getElementById('update-phone').value;
+            const email = document.getElementById('update-email').value;
+            const password = document.getElementById('update-password').value;
+
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                },
+                body: JSON.stringify({ 
+                    first_name, 
+                    last_name, 
+                    login, 
+                    phone, 
+                    email, 
+                    password 
+                }),
+            });
+
+            if (response.ok) {
+                alert('Данные профиля обновлены!');
+            } else {
+                alert('Ошибка обновления профиля!');
+            }
+        }
+
+        async function logout() {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                },
+            });
+
+            if (response.ok) {
+                localStorage.removeItem('token');
+                alert('Вы вышли из аккаунта!');
+                window.location.href = 'login'; // Перенаправление на страницу входа
+            } else {
+                alert('Ошибка выхода из аккаунта!');
+            }
+        }
+    </script>
+</body>
+</html>

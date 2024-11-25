@@ -8,10 +8,11 @@
     <h1>Login</h1>
     <form action="/login" method="post">
         <label for="login">Логин:</label>
-        <input type="text" id="login" name="login" required><br><br>
+        <input type="text" id="login" name="login" required  autocomplete="username"><br><br>
         <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required autocomplete="current-password"><br><br>
         <!-- Скрытое поле для redirect_to -->
+        
         <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
         <button type="submit">Sign In</button>
     </form>

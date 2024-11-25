@@ -14,10 +14,10 @@
     <input type="text" id="update-phone" placeholder="Новый телефон"><br><br>
     <input type="email" id="update-email" placeholder="Новая электронная почта"><br><br>
     <input type="password" id="update-password" placeholder="Новый пароль"><br><br>
-    
-    <button onclick="updateProfile()">Обновить профиль</button><br>
+    <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+    <button type="submit" onclick="updateProfile()">Обновить профиль</button><br>
     <br>
-    <button onclick="logout()">Выйти</button>
+    <button type="submit" onclick="logout()">Выйти</button>
     
     <script>
         async function updateProfile() {

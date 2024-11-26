@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Products</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome</title>
+    <link rel="stylesheet" href="/static/style_index.css">
 </head>
 <body>
-    <h1>Product List</h1>
-    <ul>
-        {{range .}}
-        <li><a href="/api/products/{{.ID}}">{{.Name}} - ${{.Price}}</a></li>
-        {{end}}
-    </ul>
+    <h1>Welcome на наш сайт</h1>
+    <div class="button-container">
+        <button onclick="window.location.href='/api/v1/auth/login'">Войти</button>
+        <button onclick="window.location.href='/api/v1/auth/register'">Регистрация</button>
+        <button onclick="window.location.href='/api/v1/auth/menu'">Профиль пользователя</button>
+        <button onclick="window.location.href='/api/v1/auth/ai'">AI</button>
+    </div>
+    {{range .}}
+    <li><a href="/api/products/{{.ID}}">{{.Name}} - ${{.Price}}</a></li>
+    {{end}}
 </body>
 </html>
+
+
+
+      
+

@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding: 20px; /* Добавлено поле для общего отступа */
+}
+
+h1 {
+    margin-top: 15%;
+    color: #333;
+    margin-bottom: 40px;
+    font-size: 36px; /* Увеличен размер шрифта заголовка */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px; /* Увеличена максимальная ширина кнопок */
+    margin-bottom: 40px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 30px; /* Увеличены отступы кнопок */
+    border: none;
+    border-radius: 8px; /* Увеличен радиус закругления */
+    cursor: pointer;
+    font-size: 18px; /* Увеличен размер шрифта кнопок */
+    flex: 1;
+    margin: 0 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.product-list {
+    list-style-type: none; /* Убирает маркеры списка */
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 800px; /* Увеличена максимальная ширина списка */
+}
+
+.product-list li {
+    background-color: #fff;
+    padding: 15px; /* Увеличены отступы для элементов списка */
+    margin: 10px 0; /* Увеличены отступы между элементами списка */
+    border-radius: 8px; /* Увеличен радиус закругления */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-list a {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 18px; /* Увеличен размер шрифта для ссылок */
+}
+
+.product-list a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .button-container {
+        flex-direction: column; /* Кнопки будут расположены вертикально на маленьких экранах */
+        align-items: center;
+    }
+
+    button {
+        margin: 10px 0; /* Отступ между кнопками по вертикали */
+        width: 100%; /* Кнопки будут занимать всю ширину */
+    }
+}

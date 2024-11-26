@@ -8,12 +8,12 @@
     <h1>Добро пожаловать, ` + claims.Username + `!</h1>
     <h2>Управление профилем</h2>
     
-    <input type="text" id="update-first_name" placeholder="Новое имя"><br><br>
-    <input type="text" id="update-last_name" placeholder="Новая фамилия"><br><br>
-    <input type="text" id="update-login" placeholder="Новый логин"><br><br>
-    <input type="tel" id="update-phone" placeholder="Новый телефон"><br><br>
-    <input type="email" id="update-email" placeholder="Новая электронная почта"><br><br>
-    <input type="password" id="update-password" placeholder="Новый пароль"><br><br>
+    <input type="text" id="first_name" placeholder="Новое имя"><br><br>
+    <input type="text" id="last_name" placeholder="Новая фамилия"><br><br>
+    <input type="text" id="login" placeholder="Новый логин"><br><br>
+    <input type="tel" id="phone" placeholder="Новый телефон"><br><br>
+    <input type="email" id="email" placeholder="Новая электронная почта"><br><br>
+    <input type="password" id="password" placeholder="Новый пароль"><br><br>
     <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
     <button type="submit" onclick="updateProfile()">Обновить профиль</button><br>
     <br>
@@ -21,12 +21,12 @@
     
     <script>
         async function updateProfile() {
-            const first_name = document.getElementById('update-first_name').value;
-            const last_name = document.getElementById('update-last_name').value;
-            const login = document.getElementById('update-login').value;
-            const phone = document.getElementById('update-phone').value;
-            const email = document.getElementById('update-email').value;
-            const password = document.getElementById('update-password').value;
+            const first_name = document.getElementById('first_name').value;
+            const last_name = document.getElementById('last_name').value;
+            const login = document.getElementById('login').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
             const token = localStorage.getItem('token');
 

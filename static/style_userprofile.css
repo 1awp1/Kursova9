@@ -1,0 +1,76 @@
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f6f8fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 40px; /* Увеличены отступы внутри контейнера */
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 500px; /* Увеличена ширина контейнера */
+    text-align: left;
+    border: 1px solid #e1e4e8;
+}
+
+h1 {
+    font-size: 36px; /* Увеличен размер шрифта заголовка */
+    margin-bottom: 30px; /* Увеличен отступ снизу */
+    color: #24292e;
+}
+
+.data {
+    margin-bottom: 30px; /* Увеличен отступ снизу */
+}
+
+.data p {
+    margin: 15px 0; /* Увеличен отступ для параграфов */
+}
+
+.data label {
+    display: block;
+    margin-bottom: 10px; /* Увеличен отступ снизу */
+    font-weight: bold;
+    color: #586069;
+    font-size: 18px; /* Увеличен размер шрифта для меток */
+}
+
+input[type="text"],
+input[type="tel"] {
+    width: calc(100% - 30px); /* Увеличена ширина полей ввода */
+    padding: 15px; /* Увеличены отступы внутри полей ввода */
+    margin: 10px 0; /* Увеличен отступ между полями */
+    border: 1px solid #e1e4e8;
+    border-radius: 4px;
+    font-size: 16px; /* Увеличен размер шрифта для полей ввода */
+}
+
+button {
+    background-color: #2cbe4e;
+    color: white;
+    border: none;
+    padding: 15px; /* Увеличены отступы кнопки */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px; /* Увеличен размер шрифта кнопки */
+    width: 25%; /* Кнопки занимают всю ширину контейнера */
+}
+
+button:hover {
+    background-color: #28a745;
+}
+
+.logout {
+    width: 100%;
+    background-color: #dc3545;
+}
+
+.logout:hover {
+    background-color: #c82333;
+}

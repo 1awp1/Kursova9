@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Данные пользователя</title>
+    <link rel="stylesheet" href="/static/style_userprofile.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Ваши данные</h1>
+    <div class="data">
+        <label for="first_name">Имя:</label>
+        <input type="text" id="first_name" value="">
+        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+        <button id="updateFirstNameButton">Обновить</button><br><br>
+
+        <label for="last_name">Фамилия:</label>
+        <input type="text" id="last_name" value="">
+        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+        <button id="updateLastNameButton">Обновить</button><br><br>
+
+        <label for="login">Логин:</label>
+        <input type="text" id="login" value="">
+        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+        <button id="updateLoginButton">Обновить</button><br><br>
+
+        <label for="phone">Телефон:</label>
+        <input type="tel" id="phone" value="">
+        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+        <button id="updatePhoneButton">Обновить</button><br><br>
+
+        <label for="email">Email:</label>
+        <input type="text" id="email" value="">
+        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
+        <button id="updateEmailButton">Обновить</button><br><br>
+    </div>
+    <button class="logout" id="logout">Выйти</button>
+</div>
+
+<script>
+    // Обработчик для обновления имени
+    document.getElementById('updateFirstNameButton').addEventListener('click', function() {
+        const firstName = document.getElementById('first_name').value;
+        alert(`Имя изменено на ${firstName}`);
+    });
+
+    // Обработчик для обновления фамилии
+    document.getElementById('updateLastNameButton').addEventListener('click', function() {
+        const lastName = document.getElementById('last_name').value;
+        alert(`Фамилия изменена на ${lastName}`);
+    });
+
+    // Обработчик для обновления логина
+    document.getElementById('updateLoginButton').addEventListener('click', function() {
+        const login = document.getElementById('login').value;
+        alert(`Логин изменен на ${login}`);
+    });
+
+    // Обработчик для обновления телефона
+    document.getElementById('updatePhoneButton').addEventListener('click', function() {
+        const phone = document.getElementById('phone').value;
+        alert(`Телефон изменен на ${phone}`);
+    });
+
+    // Обработчик для обновления email
+    document.getElementById('updateEmailButton').addEventListener('click', function() {
+        const email = document.getElementById('email').value;
+        alert(`Email изменен на ${email}`);
+    });
+
+    // Обработчик для выхода
+    document.getElementById('logout').addEventListener('click', function() {
+        alert('Вы вышли из аккаунта.');
+    });
+</script>
+
+</body>
+</html>

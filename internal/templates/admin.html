@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ Панель</title>
+    <link rel="stylesheet" href="/static/style_admin.css" />
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #e9ecef; /* Светлый фон */
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+button {
+    background-color: #007bff; /* Синий цвет */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3; /* Более темный синий при наведении */
+    transform: translateY(-2px); /* Подъем кнопки */
+}
+
+button:active {
+    transform: translateY(0); /* Возврат кнопки в исходное положение */
+}
+
+input[type="text"] {
+    width: calc(100% - 30px);
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #007bff; /* Синий цвет при фокусе */
+    outline: none; /* Убираем стандартное обрамление */
+}
+
+#userDetails {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#userInfo {
+    margin-bottom: 15px;
+    color: #555;
+}
+
+@media (max-width: 600px) {
+    button {
+        width: 100%;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+    }
+}
+
+</style>
+<body>
+    <div class="container">
+        <h1>Админ Панель</h1>
+
+        <button id="getUsersButton">Получить список пользователей</button>
+        <button id="getUser Button">Получить данные пользователя</button>
+        <input type="text" id="userId" placeholder="Введите ID пользователя" />
+
+        <div id="userDetails" style="display: none">
+            <h2>Данные пользователя</h2>
+            <p id="userInfo"></p>
+            <button id="editUser Button">Редактировать данные</button>
+            <button id="deleteUser Button">Удалить пользователя</button>
+            <button id="toggleBlockButton">Заблокировать/Разблокировать</button>
+        </div>
+
+        <button id="logoutButton">Выйти</button>
+    </div>
+
+    <script>
+        document.getElementById("getUsersButton").addEventListener("click", function () {
+            // Здесь должна быть логика для получения списка пользователей
+            alert("Получение списка пользователей...");
+        });
+
+        document.getElementById("getUser Button").addEventListener("click", function () {
+            const userId = document.getElementById("userId").value;
+            if (userId) {
+                // Здесь должна быть логика для получения данных одного пользователя
+                alert(`Получение данных пользователя с ID: ${userId}`);
+                document.getElementById("userInfo").textContent = `Данные пользователя с ID: ${userId}`; // Замените на реальные данные
+                document.getElementById("userDetails").style.display = "block";
+            } else {
+                alert("Пожалуйста, введите ID пользователя.");
+            }
+        });
+
+        document.getElementById("editUser Button").addEventListener("click", function () {
+            // Здесь должна быть логика для редактирования данных пользователя
+            alert("Редактирование данных пользователя...");
+            // Например, перенаправление на другую страницу для редактирования
+        });
+
+        document.getElementById("deleteUser Button").addEventListener("click", function () {
+            const userId = document.getElementById("userId").value;
+            if (userId) {
+                // Здесь должна быть логика для удаления пользователя
+                alert(`Удаление пользователя с ID: ${userId}`);
+                // Например, сделать AJAX-запрос к серверу для удаления пользователя
+            } else {
+                alert("Пожалуйста, введите ID пользователя для удаления.");
+            }
+        });
+
+        document.getElementById("toggleBlockButton").addEventListener("click", function () {
+            const userId = document.getElementById("userId").value;
+            if (userId) {
+                // Здесь должна быть логика для блокировки/разблокировки пользователя
+                alert(`Переключение блокировки пользователя с ID: ${userId}`);
+                // Например, сделать AJAX-запрос к серверу для блокировки/разблокировки
+            } else {
+                alert("Пожалуйста, введите ID пользователя для блокировки/разблокировки.");
+            }
+        });
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            alert("Вы вышли из аккаунта.");
+            // Здесь должна быть логика для выхода из аккаунта
+        });
+    </script>
+</body>
+</html>

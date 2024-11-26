@@ -1,32 +1,44 @@
+-- Подключаем расширение для UUID (если еще не подключено)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS roles (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     role_name VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    login varchar(255) not null,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), 
+    login VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     pass_hash TEXT NOT NULL,
     token TEXT,
-    role_id UUID,
+    role_id UUID, 
     phone_number VARCHAR(255),
     email VARCHAR(255),
-    status boolean,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL 
+    status BOOLEAN,
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL
 );
 
-INSERT INTO roles(role_name) VALUES ('employee'), ('manager'), ('admin');
+-- Вставляем роли
+INSERT INTO roles(role_name) 
+VALUES 
+    ('user'),
+    ('manager'),
+    ('admin')
+ON CONFLICT (role_name) DO NOTHING;
 
-WITH manager_role AS (
-    SELECT id FROM roles WHERE role_name = 'manager'
-),
-admin_role AS (
-    SELECT id FROM roles WHERE role_name = 'admin'
-)
+-- Добавляем пользователей
+DO $$
+DECLARE
+    manager_id UUID;
+    admin_id UUID;
+BEGIN
+    SELECT id INTO manager_id FROM roles WHERE role_name = 'manager';
+    SELECT id INTO admin_id FROM roles WHERE role_name = 'admin';
 
-INSERT INTO users (login, pass_hash, role_id, phone_number, email)
-VALUES
-    ('manag', '$2a$10$eYnJgFmQwIY5Jja5uR0.4ut3xLlL6yq3IjxIfqDwRLMM7VFxi9zT6', (SELECT id FROM manager_role), '89228990747', 'deutchwar@gmail.com'),
-    ('admi', '$2a$10$56x4DjRzGq1ersvqKuXgfeXdlczik0MzP0lXt9NvalpW20O1QjdBW', (SELECT id FROM admin_role), '89228990747', 'deutchwar@gmail.com');
+    INSERT INTO users (login, first_name, last_name, pass_hash, role_id, phone_number, email)
+    VALUES
+        ('manag', 'John', 'Doe', '$2a$10$eYnJgFmQwIY5Jja5uR0.4ut3xLlL6yq3IjxIfqDwRLMM7VFxi9zT6', manager_id, '89228990747', 'deutchwar@gmail.com'),
+        ('admi', 'Admin', 'User', '$2a$10$56x4DjRzGq1ersvqKuXgfeXdlczik0MzP0lXt9NvalpW20O1QjdBW', admin_id, '89228990747', 'deutchwar@gmail.com');
+END $$;

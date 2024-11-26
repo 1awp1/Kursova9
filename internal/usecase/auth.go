@@ -8,7 +8,6 @@ import (
 	"dim_kurs/internal/domain/request"
 	"dim_kurs/internal/repository"
 	"dim_kurs/pkg/token"
-	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -65,7 +64,7 @@ func (u *Auth) Login(ctx context.Context, req request.Login) (string, error) {
 	}
 
 	accessToken, err := u.tokenManager.NewJWT(token.AuthInfo{
-		UserID: strconv.Itoa(int(user.ID)),
+		UserID: user.ID.String(),
 		Login:  user.Login,
 		Role:   user.Role,
 	})
@@ -85,6 +84,8 @@ func (u *Auth) Login(ctx context.Context, req request.Login) (string, error) {
 func (u *Auth) Register(ctx context.Context, req request.Register) (string, error) { //TODO
 	log := u.log.WithFields(logrus.Fields{
 		"op":           "internal/usecase/auth/SignUp",
+		"first":        req.FirstName,
+		"last":         req.LastName,
 		"login":        req.Login,
 		"password":     req.Password,
 		"phone_number": req.Phone,

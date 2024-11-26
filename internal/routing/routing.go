@@ -9,6 +9,7 @@ import (
 
 type Handlers struct {
 	handler.IAuth
+	handler.IMiddleware
 }
 
 func InitRoutes(router *gin.Engine, handlers Handlers) {

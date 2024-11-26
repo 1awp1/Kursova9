@@ -114,10 +114,10 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 
 func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 	query := fmt.Sprintf(`
-		SELECT u.id::bigint, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email, u.status
+		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email, u.status
 		FROM %s AS u
 		LEFT JOIN %s AS r ON u.role_id = r.id
-		WHERE u.login = \$1
+		WHERE u.login = $1
 	`, usersTable, rolesTable)
 
 	row := r.pool.QueryRow(ctx, query, login)
@@ -142,7 +142,6 @@ func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 		return model.User{}, err
 	}
 
-	// Присваиваем роль, если она существует
 	if roleID != nil {
 		user.Role = *roleID
 	}
@@ -151,8 +150,6 @@ func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 }
 
 func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
-	userID := uuid.New()
-
 	conn, err := r.pool.Acquire(ctx)
 	if err != nil {
 		return uuid.Nil, err
@@ -183,10 +180,12 @@ func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
 		return uuid.Nil, err
 	}
 
-	query := `INSERT INTO users (id, login, pass_hash, role_id, phone_number, email) 
-	          VALUES ($1, $2, $3, $4, $5, $6)`
+	query := `INSERT INTO users (login, first_name, last_name, pass_hash, token, role_id, phone_number, email, status) 
+	          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
 
-	_, err = tx.Exec(ctx, query, userID, user.Login, user.Password, roleID, user.Phone, user.Email)
+	var userID uuid.UUID
+	row := tx.QueryRow(ctx, query, user.Login, user.FirstName, user.LastName, user.Password, user.Token, roleID, user.Phone, user.Email, user.Status)
+	err = row.Scan(&userID)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
 			return uuid.Nil, custom_errors.AlreadyExist

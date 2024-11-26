@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/vrischmann/envconfig"
 )
 
@@ -11,6 +12,7 @@ type Config struct {
 	PG
 	Server
 	Auth
+	Migration
 }
 
 type PG struct {
@@ -34,7 +36,13 @@ type Auth struct {
 	PublicKeyPath  string
 }
 
+type Migration struct {
+	Path string
+}
+
 func InitConfig(prefix string) (*Config, error) {
+	godotenv.Load()
+
 	conf := &Config{}
 	if err := envconfig.InitWithPrefix(conf, prefix); err != nil {
 		return nil, fmt.Errorf("init config error: %w", err)

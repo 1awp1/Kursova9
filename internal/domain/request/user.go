@@ -1,6 +1,6 @@
 package request
 
-type UpdateUser struct {
+type UpdateUser struct { //todo
 	FirstName *string
 	LastName  *string
 	Login     *string

@@ -19,6 +19,8 @@ RUN apk add --no-cache libc6-compat  # Убедитесь, что библиот
 COPY ./private_key.pem ./private_key.pem
 COPY ./public_key.pem ./public_key.pem
 COPY ./static ./static
+COPY ./migrations ./migrations
+
 COPY ./internal/templates ./internal/templates
 COPY --from=builder /app/cmd/app/main .
 

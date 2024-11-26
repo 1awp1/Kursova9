@@ -42,14 +42,14 @@ func (h *Auth) Login(c *gin.Context) {
 
 	redirectTo := c.PostForm("redirect_to")
 	if redirectTo == "" {
-		redirectTo = "/"
+		redirectTo = "/api/v1"
 	}
 
 	c.Redirect(http.StatusFound, redirectTo)
 }
 
 func (h *Auth) LoginPage(c *gin.Context) {
-	redirectTo := c.DefaultQuery("redirect_to", "/")
+	redirectTo := c.DefaultQuery("redirect_to", "/api/v1")
 
 	c.HTML(http.StatusOK, "login.html", gin.H{"redirect_to": redirectTo})
 }
@@ -71,14 +71,14 @@ func (h *Auth) Register(c *gin.Context) {
 
 	redirectTo := c.PostForm("redirect_to")
 	if redirectTo == "" {
-		redirectTo = "/"
+		redirectTo = "/api/v1"
 	}
 
 	c.Redirect(http.StatusFound, redirectTo)
 }
 
 func (h *Auth) RegisterPage(c *gin.Context) {
-	redirectTo := c.DefaultQuery("redirect_to", "/")
+	redirectTo := c.DefaultQuery("redirect_to", "/api/v1")
 
 	c.HTML(http.StatusOK, "register.html", gin.H{"redirect_to": redirectTo})
 }

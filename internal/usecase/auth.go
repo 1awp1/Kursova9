@@ -9,7 +9,6 @@ import (
 	"dim_kurs/internal/repository"
 	"dim_kurs/pkg/token"
 
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -98,19 +97,12 @@ func (u *Auth) Register(ctx context.Context, req request.Register) (string, erro
 		return "", err
 	}
 
-	id := uuid.New()
-	accessToken, err := u.tokenManager.NewJWT(token.AuthInfo{
-		UserID: id.String(),
-		Login:  req.Login,
-		Role:   "user",
-	})
 	passStr := string(passHash)
 	role := "user"
 	isOnline := true
 	status := true
 
 	user := model.User{
-		ID:        id,
 		FirstName: &req.FirstName,
 		LastName:  &req.LastName,
 		Login:     &req.Login,
@@ -127,6 +119,18 @@ func (u *Auth) Register(ctx context.Context, req request.Register) (string, erro
 		log.Error(err.Error())
 		return "", err
 	}
+
+	createdUser, err := u.userRepo.Get(ctx, req.Login)
+	if err != nil {
+		log.Error(err.Error())
+		return "", err
+	}
+
+	accessToken, err := u.tokenManager.NewJWT(token.AuthInfo{
+		UserID: createdUser.ID.String(),
+		Login:  req.Login,
+		Role:   "user",
+	})
 
 	return accessToken, nil
 }

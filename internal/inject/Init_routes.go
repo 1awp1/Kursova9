@@ -16,7 +16,9 @@ func NewRouteHandlers(router *gin.Engine, pool *pgxpool.Pool, log *logrus.Logger
 	handlers := NewHandlers(usecases)
 
 	routeHandlers := routing.Handlers{
-		IAuth: handlers.IAuth,
+		IAuth:       handlers.IAuth,
+		IUser:       handlers.IUser,
+		IMiddleware: handlers.IMiddleware,
 	}
 
 	return routeHandlers

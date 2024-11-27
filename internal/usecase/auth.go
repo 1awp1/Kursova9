@@ -58,15 +58,15 @@ func (u *Auth) Login(ctx context.Context, req request.Login) (string, error) {
 		return "", err
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(req.Password)); err != nil {
 		log.Error(err.Error())
 		return "", err
 	}
 
 	accessToken, err := u.tokenManager.NewJWT(token.AuthInfo{
 		UserID: user.ID.String(),
-		Login:  user.Login,
-		Role:   user.Role,
+		Login:  *user.Login,
+		Role:   *user.Role,
 	})
 	if err != nil {
 		log.Error(err.Error())
@@ -98,22 +98,28 @@ func (u *Auth) Register(ctx context.Context, req request.Register) (string, erro
 		return "", err
 	}
 
+	id := uuid.New()
 	accessToken, err := u.tokenManager.NewJWT(token.AuthInfo{
-		UserID: uuid.New().String(),
+		UserID: id.String(),
 		Login:  req.Login,
 		Role:   "user",
 	})
+	passStr := string(passHash)
+	role := "user"
+	isOnline := true
+	status := true
 
 	user := model.User{
-		FirstName: req.FirstName,
-		LastName:  req.LastName,
-		Login:     req.Login,
-		Phone:     req.Phone,
-		Email:     req.Email,
-		Password:  string(passHash),
-		Role:      "user",
-		Token:     &accessToken,
-		Status:    true,
+		ID:        id,
+		FirstName: &req.FirstName,
+		LastName:  &req.LastName,
+		Login:     &req.Login,
+		Phone:     &req.Phone,
+		Email:     &req.Email,
+		Password:  &passStr,
+		Role:      &role,
+		IsOnline:  &isOnline,
+		Status:    &status,
 	}
 
 	_, err = u.userRepo.Create(ctx, user)

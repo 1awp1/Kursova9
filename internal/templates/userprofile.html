@@ -1,80 +1,106 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Данные пользователя</title>
-    <link rel="stylesheet" href="/static/style_userprofile.css">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        input, button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logout {
+            background-color: #dc3545;
+        }
+        .logout:hover {
+            background-color: #b02a37;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+        }
+        .success {
+            color: #28a745;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>User Profile</h1>
 
-<div class="container">
-    <h1>Ваши данные</h1>
-    <div class="data">
-        <label for="first_name">Имя:</label>
-        <input type="text" id="first_name" value="">
-        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
-        <button id="updateFirstNameButton">Обновить</button><br><br>
+        <!-- Уведомление об ошибке -->
+        <p class="error">Error message goes here</p>
 
-        <label for="last_name">Фамилия:</label>
-        <input type="text" id="last_name" value="">
-        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
-        <button id="updateLastNameButton">Обновить</button><br><br>
+        <!-- Приветствие -->
+        <p class="success">Welcome, User's First Name!</p>
 
-        <label for="login">Логин:</label>
-        <input type="text" id="login" value="">
-        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
-        <button id="updateLoginButton">Обновить</button><br><br>
+        <!-- Форма обновления данных -->
+        <form method="POST" action="/api/v1/profile/update">
+            <input type="hidden" name="_method" value="PUT"> <!-- Указание метода PUT -->
 
-        <label for="phone">Телефон:</label>
-        <input type="tel" id="phone" value="">
-        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
-        <button id="updatePhoneButton">Обновить</button><br><br>
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="" placeholder="Enter your first name">
 
-        <label for="email">Email:</label>
-        <input type="text" id="email" value="">
-        <input type="hidden" name="redirect_to" value="{{.redirect_to}}">
-        <button id="updateEmailButton">Обновить</button><br><br>
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="" placeholder="Enter your last name">
+
+            <label for="login">Login</label>
+            <input type="text" id="login" name="login" value="" placeholder="Enter your login">
+
+            <label for="phone">Phone</label>
+            <input type="text" id="phone" name="phone" value="" placeholder="Enter your phone number">
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="" placeholder="Enter your email">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter a new password">
+
+            <button type="submit">Update Profile</button>
+        </form>
+
+        <!-- Кнопка выхода -->
+        <form method="POST" action="/api/v1/profile">
+            <button type="submit" class="logout">Logout</button>
+        </form>
     </div>
-    <button class="logout" id="logout">Выйти</button>
-</div>
-
-<script>
-    // Обработчик для обновления имени
-    document.getElementById('updateFirstNameButton').addEventListener('click', function() {
-        const firstName = document.getElementById('first_name').value;
-        alert(`Имя изменено на ${firstName}`);
-    });
-
-    // Обработчик для обновления фамилии
-    document.getElementById('updateLastNameButton').addEventListener('click', function() {
-        const lastName = document.getElementById('last_name').value;
-        alert(`Фамилия изменена на ${lastName}`);
-    });
-
-    // Обработчик для обновления логина
-    document.getElementById('updateLoginButton').addEventListener('click', function() {
-        const login = document.getElementById('login').value;
-        alert(`Логин изменен на ${login}`);
-    });
-
-    // Обработчик для обновления телефона
-    document.getElementById('updatePhoneButton').addEventListener('click', function() {
-        const phone = document.getElementById('phone').value;
-        alert(`Телефон изменен на ${phone}`);
-    });
-
-    // Обработчик для обновления email
-    document.getElementById('updateEmailButton').addEventListener('click', function() {
-        const email = document.getElementById('email').value;
-        alert(`Email изменен на ${email}`);
-    });
-
-    // Обработчик для выхода
-    document.getElementById('logout').addEventListener('click', function() {
-        alert('Вы вышли из аккаунта.');
-    });
-</script>
-
 </body>
 </html>

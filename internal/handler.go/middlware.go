@@ -2,6 +2,7 @@ package handler
 
 import (
 	"dim_kurs/internal/usecase"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 
 type IMiddleware interface {
 	AccountIdentity(c *gin.Context)
+	MethodOverride(c *gin.Context)
 }
 
 const (
@@ -39,18 +41,29 @@ func (m *Middleware) AccountIdentity(c *gin.Context) {
 		return
 	}
 
-	_, err = m.authUseCase.VerifyToken(c.Request.Context(), parts[1])
+	claims, err := m.authUseCase.VerifyToken(c.Request.Context(), parts[1])
 	if err != nil {
 		redirectToLogin(c)
 		return
 	}
 
-	c.Set("token", parts[1])
+	c.Set("claims", *claims)
 	c.Next()
 }
 
 func redirectToLogin(c *gin.Context) {
 	originalURL := c.Request.RequestURI
-	c.Redirect(http.StatusFound, "/login?redirect_to="+originalURL)
+	c.Redirect(http.StatusFound, "api/v1/auth/login?redirect_to="+originalURL)
 	c.Abort()
+}
+
+func (h *Middleware) MethodOverride(c *gin.Context) {
+	method := c.DefaultPostForm("_method", "")
+
+	fmt.Println(method)
+
+	if method != "" {
+		c.Request.Method = method
+	}
+	c.Next()
 }

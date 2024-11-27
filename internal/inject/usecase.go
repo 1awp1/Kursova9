@@ -10,10 +10,12 @@ import (
 
 type UseCases struct {
 	usecase.IAuth
+	usecase.IUser
 }
 
 func NewUseCases(repos *Repositories, log *logrus.Logger, cfg config.Auth, tokenManager token.TokenManager) *UseCases {
 	return &UseCases{
 		IAuth: usecase.NewAuth(repos.IUser, log, cfg, tokenManager),
+		IUser: usecase.NewUser(repos.IUser, log),
 	}
 }

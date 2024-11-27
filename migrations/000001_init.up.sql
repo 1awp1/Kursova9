@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     pass_hash TEXT NOT NULL,
-    token TEXT,
+    is_online BOOLEAN,
     role_id UUID, 
     phone_number VARCHAR(255),
     email VARCHAR(255),

@@ -6,6 +6,7 @@ import (
 	"dim_kurs/internal/domain/model"
 	"dim_kurs/internal/domain/request"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/google/uuid"
@@ -18,7 +19,7 @@ type IUser interface {
 	GetUsers(ctx context.Context, req request.GetUsers) ([]model.User, error)
 	Get(ctx context.Context, login string) (model.User, error)
 	Create(ctx context.Context, user model.User) (uuid.UUID, error)
-	Update(ctx context.Context, req model.User) error
+	Update(ctx context.Context, user model.User) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
@@ -39,7 +40,7 @@ func NewUser(pool *pgxpool.Pool) *User {
 
 func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User, error) {
 	query := fmt.Sprintf(`
-		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email
+		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.is_online, r.role_name, u.phone_number, u.email
 		FROM %s AS u
 		LEFT JOIN %s AS r ON u.role_id = r.id
 	`, usersTable, rolesTable)
@@ -89,7 +90,7 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 			&user.FirstName,
 			&user.LastName,
 			&user.Password,
-			&user.Token,
+			&user.IsOnline,
 			&roleID,
 			&user.Phone,
 			&user.Email,
@@ -99,7 +100,7 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 
 		// Присваиваем роль, если она существует
 		if roleID != nil {
-			user.Role = *roleID
+			user.Role = roleID
 		}
 
 		users = append(users, user)
@@ -114,7 +115,7 @@ func (r *User) GetUsers(ctx context.Context, req request.GetUsers) ([]model.User
 
 func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 	query := fmt.Sprintf(`
-		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.token, r.role_name, u.phone_number, u.email, u.status
+		SELECT u.id, u.login, u.first_name, u.last_name, u.pass_hash, u.is_online, r.role_name, u.phone_number, u.email, u.status
 		FROM %s AS u
 		LEFT JOIN %s AS r ON u.role_id = r.id
 		WHERE u.login = $1
@@ -130,7 +131,7 @@ func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Password,
-		&user.Token,
+		&user.IsOnline,
 		&roleID,
 		&user.Phone,
 		&user.Email,
@@ -143,7 +144,7 @@ func (r *User) Get(ctx context.Context, login string) (model.User, error) {
 	}
 
 	if roleID != nil {
-		user.Role = *roleID
+		user.Role = roleID
 	}
 
 	return user, nil
@@ -180,11 +181,11 @@ func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
 		return uuid.Nil, err
 	}
 
-	query := `INSERT INTO users (login, first_name, last_name, pass_hash, token, role_id, phone_number, email, status) 
+	query := `INSERT INTO users (login, first_name, last_name, pass_hash, is_online, role_id, phone_number, email, status) 
 	          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`
 
 	var userID uuid.UUID
-	row := tx.QueryRow(ctx, query, user.Login, user.FirstName, user.LastName, user.Password, user.Token, roleID, user.Phone, user.Email, user.Status)
+	row := tx.QueryRow(ctx, query, user.Login, user.FirstName, user.LastName, user.Password, user.IsOnline, roleID, user.Phone, user.Email, user.Status)
 	err = row.Scan(&userID)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
@@ -198,7 +199,7 @@ func (r *User) Create(ctx context.Context, user model.User) (uuid.UUID, error) {
 
 func (r *User) Update(ctx context.Context, user model.User) error {
 	var roleID *uuid.UUID
-	if user.Role != "" {
+	if user.Role != nil && *user.Role != "" {
 		err := r.pool.QueryRow(ctx, "SELECT id FROM roles WHERE role_name = $1", user.Role).Scan(&roleID)
 		if err != nil {
 			if err == pgx.ErrNoRows {
@@ -208,33 +209,71 @@ func (r *User) Update(ctx context.Context, user model.User) error {
 		}
 	}
 
-	query := `
-		UPDATE users 
-		SET login = COALESCE($1, login), 
-		    pass_hash = COALESCE($2, pass_hash), 
-		    role_id = COALESCE($3, role_id), 
-		    phone_number = COALESCE($4, phone_number),
-		    email = COALESCE($5, email),
-		    status = COALESCE($6, status)
-		WHERE id = $7`
+	query := "UPDATE users SET "
+	args := []interface{}{}
+	argIndex := 1
 
-	_, err := r.pool.Exec(ctx, query,
-		&user.Login,
-		&user.Password,
-		roleID,
-		&user.Phone,
-		&user.Email,
-		&user.Status,
-		&user.ID,
-	)
+	if user.FirstName != nil {
+		query += "first_name = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.FirstName)
+		argIndex++
+	}
+	if user.LastName != nil {
+		query += "last_name = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.LastName)
+		argIndex++
+	}
+	if user.Login != nil {
+		query += "login = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.Login)
+		argIndex++
+	}
+	if user.Password != nil {
+		query += "pass_hash = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.Password)
+		argIndex++
+	}
+	if roleID != nil {
+		query += "role_id = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, roleID)
+		argIndex++
+	}
+	if user.Phone != nil {
+		query += "phone_number = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.Phone)
+		argIndex++
+	}
+	if user.Email != nil {
+		query += "email = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.Email)
+		argIndex++
+	}
+	if user.Status != nil {
+		query += "status = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.Status)
+		argIndex++
+	}
+	if user.IsOnline != nil {
+		query += "is_online = $" + strconv.Itoa(argIndex) + ", "
+		args = append(args, user.IsOnline)
+		argIndex++
+	}
 
+	// Удаляем лишнюю запятую и пробел в конце
+	query = query[:len(query)-2]
+	query += " WHERE id = $" + strconv.Itoa(argIndex)
+	args = append(args, user.ID)
+
+	// Выполнение запроса
+	_, err := r.pool.Exec(ctx, query, args...)
 	if err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
 			return custom_errors.AlreadyExist
 		}
+		return err
 	}
 
-	return err
+	return nil
 }
 
 func (r *User) Delete(ctx context.Context, id uuid.UUID) error {
